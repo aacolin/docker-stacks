@@ -80,11 +80,12 @@ Backup recommendation
 The included `.env` file is a **template** that shows which environment variables the stack expects.  
 It does **not** contain real values by default — all entries are commented out and use placeholder text.
 
-You should:
+You must:
 
-1. **Replace placeholders with real values.**  
-2. **Uncomment each variable you intend to use** by removing the leading `#`.  
-3. Keep this file in the same folder as your compose file (it's there by default anyways)
+1. **Rename** `example.env` to `.env`
+2. **Replace placeholders with real values.**  
+3. **Uncomment each variable you intend to use** by removing the leading `#`.  
+3. Keep the `env` file in the same folder as your compose file (it's there by default anyways)
 
 ---
 
