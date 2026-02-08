@@ -1,0 +1,38 @@
+services:
+  gotify:
+    image: gotify/server
+    container_name: gotify
+    volumes:
+      - gotify-data:/app/data
+    restart: unless-stopped
+    ports:
+      - ${APP_PORT}:80
+    networks:
+      - reverse-proxy
+    env_file:
+      - .env
+    environment:
+      - TZ=${TZ}
+      - GOTIFY_DEFAULTUSER_NAME=${GOTIFY_DEFAULTUSER_NAME}
+      - GOTIFY_DEFAULTUSER_PASS=${GOTIFY_DEFAULTUSER_PASS}
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.gotify.entrypoints=https"
+    - "traefik.http.routers.gotify.rule=Host(`${APP_URL}`)"
+    - "traefik.http.routers.gotify.tls=true"
+    - "traefik.http.routers.gotify.tls.certresolver=${CERT_RESOLVER}"
+    - "traefik.http.services.gotify.loadbalancer.server.scheme=http"
+    - "traefik.http.services.gotify.loadbalancer.server.port=${APP_PORT}"
+
+    # to run gotify as a dedicated user:
+    # sudo chown -R 1234:1234 ./gotify_data
+    # user: "1234:1234"
+
+volumes:
+  gotify-data:
+    name: gotify-data
+    external: true
+
+networks:
+  reverse-proxy:
+    external: true
