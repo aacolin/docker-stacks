@@ -78,17 +78,9 @@ Backup recommendation
 ## `.env` file (template)
 
 The included `.env` file is a **template** that shows which environment variables the stack expects.  
-It does **not** contain real values by default — all entries are commented out and use placeholder text.
-
-You must:
-
-1. **Rename** `example.env` to `.env`
-2. **Replace placeholders with real values.**  
-3. **Uncomment each variable you intend to use** by removing the leading `#`.  
-3. Keep the `env` file in the same folder as your compose file (it's there by default anyways)
+It does **not** contain real values by default — all entries mudt be filled out.
 
 ---
-
 
 ## Variable explanations
 
@@ -122,7 +114,7 @@ Europe/Berlin
 Asia/Kolkata
 
 
-## .env template contents
+## example.env template contents
 
 ```bash
 #GOTIFY_DEFAULTUSER_NAME=admin_username
