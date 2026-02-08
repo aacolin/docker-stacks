@@ -10,7 +10,7 @@ services:
     networks:
       - reverse-proxy
     env_file:
-      - production.env
+      - .env
     environment:
       - TZ=${TZ}
       - GOTIFY_DEFAULTUSER_NAME=${GOTIFY_DEFAULTUSER_NAME}
