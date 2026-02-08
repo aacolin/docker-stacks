@@ -78,7 +78,7 @@ Backup recommendation
 ## `.env` file (template)
 
 The included `.env` file is a **template** that shows which environment variables the stack expects.  
-It does **not** contain real values by default — all entries mudt be filled out.
+It does **not** contain real values by default — all entries must be filled out.
 
 ---
 
