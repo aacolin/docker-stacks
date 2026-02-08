@@ -1,0 +1,15 @@
+# Secrets
+.env
+*.env
+secrets/
+*.key
+*.pem
+
+# Docker persistent data
+**/data/
+**/config/
+**/db/
+
+# OS junk
+.DS_Store
+Thumbs.db
