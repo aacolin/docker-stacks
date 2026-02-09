@@ -31,7 +31,7 @@ services:
 volumes:
   gotify-data:
     name: gotify-data
-    external: true # <---comment outthis line if you you are not using an existing volume (aka if this is the first time you are deploying this stack)
+    external: true # <---comment out this line if you you are not using an existing volume (aka if this is the first time you are deploying this stack)
 
 networks:
   reverse-proxy:
