@@ -1,25 +1,5 @@
 services:
 
-  immichframe_init:
-    image: alpine:latest
-    container_name: immichframe_init
-    command: >
-      sh -c "
-      apk add --no-cache gettext &&
-      envsubst < /template/settings.yml > /config/settings.yml
-      "
-    env_file:
-      - .env
-    volumes:
-      - ./templates:/template:ro   
-      - config:/config:rw
-    environment:
-      - WEATHER_API_KEY
-      - IMMICH_SERVER_URL
-      - IMMICH_API_KEY
-      - ALBUM_ID
-    restart: "no"
-
   immichframe:
     container_name: immichframe-${LOCATION}
     image: ghcr.io/immichframe/immichframe:latest
@@ -29,7 +9,7 @@ services:
     env_file:
       - .env
     volumes:
-      - config:/app/Config
+      - /config:/app/Config
     ports:
       - "${APP_PORT}:8080"
     environment:
@@ -49,7 +29,3 @@ services:
 networks:
   reverse-proxy:   
     external: true
-
-volumes:
-  config:
-
