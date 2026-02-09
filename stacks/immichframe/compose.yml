@@ -12,7 +12,7 @@ services:
       - .env
     volumes:
       - ./templates:/template:ro   
-      - config:/config
+      - config:/config:rw
     environment:
       - WEATHER_API_KEY
       - IMMICH_SERVER_URL
