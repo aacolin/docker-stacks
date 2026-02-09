@@ -1,0 +1,55 @@
+services:
+
+  immichframe_init:
+    image: alpine:latest
+    container_name: immichframe_init
+    command: >
+      sh -c "
+      apk add --no-cache gettext &&
+      envsubst < /template/settings.yml > /config/settings.yml
+      "
+    env_file:
+      - .env
+    volumes:
+      - ./templates:/template:ro   
+      - config:/config
+    environment:
+      - WEATHER_API_KEY
+      - IMMICH_SERVER_URL
+      - IMMICH_API_KEY
+      - ALBUM_ID
+    restart: "no"
+
+  immichframe:
+    container_name: immichframe-${LOCATION}
+    image: ghcr.io/immichframe/immichframe:latest
+    restart: on-failure
+    depends_on:
+      - immichframe_init
+    env_file:
+      - .env
+    volumes:
+      - config:/app/Config
+    ports:
+      - "${APP_PORT}:8080"
+    environment:
+      TZ: ${LOCAL_TZ}
+
+    networks:
+      - reverse-proxy  
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.immichframe-${LOCATION}.entrypoints=https"
+      - "traefik.http.routers.immichframe-${LOCATION}.rule=Host(`${APP_URL}`)"
+      - "traefik.http.routers.immichframe-${LOCATION}.tls=true"   
+      - "traefik.http.routers.immichframe-${LOCATION}.tls.certresolver=${CERT_RESOLVER}"
+      - "traefik.http.services.immichframe-${LOCATION}.loadbalancer.server.scheme=http"
+      - "traefik.http.services.immichframe-${LOCATION}.loadbalancer.server.port=${APP_PORT}"
+
+networks:
+  reverse-proxy:   
+    external: true
+
+volumes:
+  config:
+
