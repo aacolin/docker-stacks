@@ -4,8 +4,6 @@ services:
     container_name: immichframe-${LOCATION}
     image: ghcr.io/immichframe/immichframe:latest
     restart: on-failure
-    depends_on:
-      - immichframe_init
     env_file:
       - .env
     volumes:
