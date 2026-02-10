@@ -1,0 +1,68 @@
+services:
+  web:
+    image: ghcr.io/karakeep-app/karakeep:${KARAKEEP_VERSION:-release}
+    container_name: karakeep
+    env_file:
+      - .env
+    volumes:
+      - data:/data
+    ports:
+      - ${APP_PORT}:3000
+    environment:
+      MEILI_ADDR: ${MEILI_ADDR}
+      BROWSER_WEB_URL: ${BROWSER_WEB_URL}
+      DATA_DIR: /data # DON'T CHANGE THIS
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.karakeep.entrypoints=https"
+    - "traefik.http.routers.karakeep.rule=Host(`${SERVICE_DOMAIN}`)"
+    - "traefik.http.routers.karakeep.tls=true"
+    - "traefik.http.routers.karakeep.tls.certresolver=${CERT_RESOLVER}"
+    - "traefik.http.services.karakeep.loadbalancer.server.scheme=http"
+    - "traefik.http.services.karakeep.loadbalancer.server.port=${SERVICE_PORT}"
+    networks:
+      - reverse-proxy
+      - karakeep-internal
+    restart: unless-stopped
+  
+  chrome:
+    image: gcr.io/zenika-hub/alpine-chrome:124
+    container_name: karakeep-chrome
+    restart: unless-stopped
+    command:
+      - --no-sandbox
+      - --disable-gpu
+      - --disable-dev-shm-usage
+      - --remote-debugging-address=0.0.0.0
+      - --remote-debugging-port=9222
+      - --hide-scrollbars
+    networks:
+      - karakeep-internal
+
+  meilisearch:
+    image: getmeili/meilisearch:v1.13.3
+    container_name: karakeep-meilisearch
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      MEILI_NO_ANALYTICS: "true"
+    volumes:
+      - meilisearch:/meili_data
+    networks:
+      - karakeep-internal
+
+volumes:
+  meilisearch:
+    name: karakeep-meilisearch
+    external: true    # Uncomment this line if you DON'T want to use an existing volume
+  data:
+    name: karakeep-data
+    external: true    # Uncomment the above line if you DON'T want to use an existing volume
+
+networks:
+  karakeep-internal:
+    driver: bridge
+    name: karakeep-internal
+  reverse-proxy:
+    external: true    
