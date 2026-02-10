@@ -15,6 +15,7 @@ services:
       WeatherApiKey: ${WeatherApiKey}
       UnitSystem: ${UnitSystem}
       WeatherLatLong: ${WeatherLatLong}
+      Language: ${Language}
       Interval: ${Interval}
       TransitionDuration: ${TransitionDuration}
       ShowAlbumName: ${ShowAlbumName}
