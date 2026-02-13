@@ -1,0 +1,67 @@
+
+services:
+
+  mysql_db:
+    image: "mysql:9"
+    restart: unless-stopped
+    container_name: homelab-xwiki-mysql-db
+    volumes:
+      - homelab-mysql-data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_USER=${DB_USER}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
+    # Pass arguments to configure the database
+    command:
+      - "--character-set-server=utf8mb4"
+      - "--collation-server=utf8mb4_bin"
+      - "--explicit-defaults-for-timestamp=1"
+    networks:
+      - homelab-xwiki-internal
+
+  xwiki_web_app:
+    image: "xwiki:${XWIKI_VERSION}-mysql-tomcat"
+    restart: unless-stopped
+    container_name: homelab-xwiki-mysql-tomcat-web
+    depends_on:
+      - mysql_db
+    ports:
+      - "${APP_PORT}:8080"
+    environment:
+      - XWIKI_VERSION=${XWIKI_VERSION}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_DATABASE=${DB_DATABASE}
+      - DB_HOST=homelab-xwiki-mysql-db
+      - JVM_OPTS=-Xms512m -Xmx1024m
+    volumes:
+      - homelab-xwiki-data:/usr/local/xwiki
+    networks:
+      - homelab-xwiki-internal
+      - reverse-proxy
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.homelab-xwiki.entrypoints=https"
+    - "traefik.http.routers.homelab-xwiki.rule=Host(`${APP_URL}`)"
+    - "traefik.http.routers.homelab-xwiki.tls=true"
+    - "traefik.http.routers.homelab-xwiki.tls.certresolver=${CERT_RESOLVER}"
+    - "traefik.http.services.homelab-xwiki.loadbalancer.server.scheme=http"
+    - "traefik.http.services.homelab-xwiki.loadbalancer.server.port=${APP_PORT}"
+volumes:
+  homelab-mysql-data:
+    name: homelab-mysql-data
+    external: true
+  homelab-xwiki-data:
+    name: homelab-xwiki-data
+    external: true
+
+networks:
+  homelab-xwiki-internal:
+    driver: bridge
+    name: homelab-xwiki-internal
+  reverse-proxy:
+    external: true
+
+    
