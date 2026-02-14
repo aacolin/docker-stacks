@@ -51,11 +51,9 @@ services:
 volumes:
   mysql-data:
     name: ${PROJECT_NAME}-mysql-data
-    external: true
 
   xwiki-data:
     name: ${PROJECT_NAME}-xwiki-data
-    external: true
 
 networks:
   xwiki-internal:
