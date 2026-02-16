@@ -1,0 +1,24 @@
+services:
+  whoami:
+    image: containous/whoami
+    container_name: whoami
+
+    labels:
+    - "traefik.enable=true"
+    - "traefik.http.routers.whoami.entrypoints=https"
+    - "traefik.http.routers.whoami.rule=Host(`${APP_URL}`)"
+    - "traefik.http.routers.whoami.tls=true"
+    - "traefik.http.routers.whoami.tls.certresolver=${CERT_RESOLVER}"
+    - "traefik.http.services.whoami.loadbalancer.server.scheme=http"
+    - "traefik.http.services.whoami.loadbalancer.server.port=${APP_PORT}"
+
+    ports:
+      - "${APP_PORT}:80"
+    restart: unless-stopped
+
+    networks:
+      - reverse-proxy
+
+networks:
+  reverse-proxy:
+    external: true
