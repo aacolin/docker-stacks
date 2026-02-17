@@ -1,0 +1,18 @@
+services:
+  traefik-kop:
+    image: "ghcr.io/jittering/traefik-kop:latest"
+    container_name: traefik-kop
+    restart: unless-stopped
+    networks:
+      - reverse-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - "REDIS_ADDR=${REDIS_ADDR:-redis:6379}"
+      - "BIND_IP=${BIND_IP}"
+      # Alternatively, derive from an interface (requires network_mode: host)
+      # - "BIND_INTERFACE=eth0"
+
+networks:
+  reverse-proxy:
+    external: true
