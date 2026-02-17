@@ -8,7 +8,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - "REDIS_ADDR=${REDIS_ADDR:-redis:6379}"
+      - "REDIS_ADDR=${REDIS_ADDR}"
       - "BIND_IP=${BIND_IP}"
       # Alternatively, derive from an interface (requires network_mode: host)
       # - "BIND_INTERFACE=eth0"
